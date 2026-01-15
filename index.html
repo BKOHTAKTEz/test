@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Crash Game</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a0033 100%);
+            color: white; 
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .balance { font-size: 18px; font-weight: bold; }
+        
+        .game-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            height: calc(100vh - 120px);
+        }
+        
+        #rocket {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            border-radius: 50% 50% 50% 20%;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.5);
+        }
+        
+        #rocket::after {
+            content: '🚀';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+        }
+        
+        .multiplier {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            color: #00ff88;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bet-btn { 
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .cashout-btn { 
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            display: none;
+        }
+        
+        button:active { transform: scale(0.95); }
+        
+        .crash { 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #ff4444;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="balance" id="balance">⭐ 0.00</div>
+        <div>🚀 Crash</div>
+    </div>
+    
+    <div class="game-area">
+        <div id="rocket"></div>
+        <div class="multiplier" id="multiplier">1.00x</div>
+        <div class="crash" id="crash">💥 КРАШ!</div>
+    </div>
+    
+    <div class="controls">
+        <button class="bet-btn" onclick="placeBet()">Ставка 5⭐</button>
+        <button class="cashout-btn" onclick="cashOut()">Вывод!</button>
+    </div>
+
+    <script>
+        let gameActive = false;
+        let multiplier = 1.00;
+        let betAmount = 0;
+        let rocket = document.getElementById('rocket');
+        let multiplierEl = document.getElementById('multiplier');
+        
+        // Telegram WebApp
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        
+        // Обновляем баланс
+        function updateBalance() {
+            Telegram.WebApp.MainButton.setText('Играть в боте →');
+            Telegram.WebApp.MainButton.show();
+            Telegram.WebApp.MainButton.onClick(() => {
+                Telegram.WebApp.close();
+            });
+        }
+        
+        // Ставка
+        async function placeBet() {
+            betAmount = 5;
+            gameActive = true;
+            document.querySelector('.bet-btn').style.display = 'none';
+            document.querySelector('.cashout-btn').style.display = 'inline-block';
+            
+            multiplier = 1.00;
+            updateMultiplier();
+            
+            // Анимация взлета ракеты
+            rocket.style.transition = 'bottom 0.1s linear';
+            rocket.style.bottom = '20%';
+            
+            // Симуляция полета
+            const gameLoop = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(gameLoop);
+                    return;
+                }
+                
+                multiplier += Math.random() * 0.08;
+                multiplier = Math.min(multiplier, 100);
+                updateMultiplier();
+                
+                // Краш с шансом
+                const crashChance = 0.015 + (multiplier * 0.0004);
+                if (Math.random() < crashChance) {
+                    crash();
+                    clearInterval(gameLoop);
+                }
+            }, 200);
+        }
+        
+        // Обновление множителя
+        function updateMultiplier() {
+            multiplierEl.textContent = multiplier.toFixed(2) + 'x';
+            rocket.style.bottom = Math.min((multiplier * 2.5), 80) + '%';
+        }
+        
+        // Вывод
+        function cashOut() {
+            gameActive = false;
+            document.querySelector('.cashout-btn').style.display = 'none';
+            document.querySelector('.bet-btn').style.display = 'inline-block';
+            rocket.style.bottom = '0';
+            
+            // Отправляем результат боту
+            Telegram.WebApp.sendData(JSON.stringify({
+                action: 'cashout',
+                multiplier: multiplier.toFixed(2),
+                bet: betAmount
+            }));
+        }
+        
+        // Краш
+        function crash() {
+            gameActive = false;
+            document.getElementById('crash').style.display = 'block';
+            document.querySelector('.cashout-btn').style.display = 'none';
+            document.querySelector('.bet-btn').style.display = 'inline-block';
+            rocket.style.transform = 'translateX(-50%) rotate(180deg) scale(0.5)';
+            
+            setTimeout(() => {
+                document.getElementById('crash').style.display = 'none';
+                rocket.style.bottom = '0';
+                rocket.style.transform = 'translateX(-50%)';
+            }, 2000);
+        }
+        
+        updateBalance();
+    </script>
+</body>
+</html>

@@ -24,12 +24,10 @@
         }
         
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
+            0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         
-        /* Частицы фона */
         body::before {
             content: '';
             position: fixed;
@@ -40,8 +38,7 @@
             background-image: 
                 radial-gradient(2px 2px at 20px 30px, #fff, transparent),
                 radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent);
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent);
             background-repeat: repeat;
             background-size: 200px 100px;
             animation: sparkle 20s linear infinite;
@@ -270,45 +267,16 @@
             transform: none !important;
         }
         
-        .game-ended {
-            background: linear-gradient(45deg, #ff4444, #cc3333) !important;
+        .btn-cashout.game-ended {
+            background: linear-gradient(45deg, #ffd700, #ffaa00) !important;
             animation: gameEndShake 0.5s ease-in-out;
-            box-shadow: 0 0 30px rgba(255, 68, 68, 0.6) !important;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important;
         }
         
         @keyframes gameEndShake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            font-size: 14px;
-            text-align: center;
-        }
-        
-        .stat {
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .stat:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        
-        .stat-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #00ff88;
-            margin-bottom: 5px;
         }
         
         .particles {
@@ -336,12 +304,8 @@
                 transform: translateY(100vh) scale(0);
                 opacity: 0;
             }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
             100% {
                 transform: translateY(-10vh) scale(1);
                 opacity: 0;
@@ -362,7 +326,7 @@
         </div>
         
         <div class="multiplier" id="multiplier">1.00x</div>
-        <div class="status" id="status">🎮 Нажмите играть в боте!</div>
+        <div class="status" id="status">Инициализация...</div>
         
         <div class="bet-info">
             <div class="bet-display" id="betDisplay">Ставка: --⭐</div>
@@ -371,17 +335,6 @@
         
         <div class="controls">
             <button class="btn btn-cashout" id="cashoutBtn" disabled>💰 ВЫВОД</button>
-        </div>
-        
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value" id="maxMultiplier">1.00x</div>
-                <span>🔥 Макс</span>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="gamesPlayed">0</div>
-                <span>⚡ Игр</span>
-            </div>
         </div>
     </div>
 
@@ -396,82 +349,83 @@
         let gamesPlayed = 0;
         let maxMultiplier = 1.00;
         let crashPoint = 1.00;
+        let crashHistory = [];
         
-        const multiplierEl = document.getElementById('multiplier');
-        const statusEl = document.getElementById('status');
-        const rocketEl = document.getElementById('rocket');
-        const cashoutBtn = document.getElementById('cashoutBtn');
-        const betDisplay = document.getElementById('betDisplay');
-        const potentialWinEl = document.getElementById('potentialWin');
-        const maxMultiplierEl = document.getElementById('maxMultiplier');
-        const gamesPlayedEl = document.getElementById('gamesPlayed');
-        const particlesEl = document.getElementById('particles');
+        const elements = {
+            multiplier: document.getElementById('multiplier'),
+            status: document.getElementById('status'),
+            rocket: document.getElementById('rocket'),
+            cashoutBtn: document.getElementById('cashoutBtn'),
+            betDisplay: document.getElementById('betDisplay'),
+            potentialWin: document.getElementById('potentialWin'),
+            particles: document.getElementById('particles')
+        };
         
         // Показываем ставку
-        betDisplay.textContent = `Ставка: ${betAmount.toFixed(0)}⭐`;
-        potentialWinEl.textContent = `Потенциал: ${(betAmount * 1).toFixed(0)}⭐`;
+        elements.betDisplay.textContent = `Ставка: ${betAmount.toFixed(0)}⭐`;
+        elements.potentialWin.textContent = `Потенциал: ${(betAmount * 1).toFixed(0)}⭐`;
         
         // Telegram WebApp
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-        Telegram.WebApp.MainButton.setText('Играть ещё!').show().onClick(startNewGame);
         
         // Частицы
         function createParticles(x, y, color) {
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 8; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
+                particle.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+                particle.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
                 particle.style.background = color;
                 particle.style.animationDelay = (i * 0.1) + 's';
-                particle.style.animationDuration = (2 + Math.random()) + 's';
-                particlesEl.appendChild(particle);
+                particle.style.animationDuration = (2 + Math.random() * 1) + 's';
+                elements.particles.appendChild(particle);
                 
                 setTimeout(() => particle.remove(), 4000);
             }
         }
         
-        // Генерация crash point
+        // Генерация crash point (проверочно честный)
         function generateCrashPoint() {
             const rand = Math.random();
             return Math.max(1.00, -(Math.log(1 - rand) / 0.13));
         }
         
-        // Игра
+        // ✅ СТАРТ ИГРЫ
         function startGame() {
             gameState = 'running';
             currentMultiplier = 1.00;
             crashPoint = generateCrashPoint();
             
-            statusEl.textContent = '🚀 ЛЕТИ!';
-            statusEl.className = 'status running';
-            rocketEl.className = 'rocket running';
-            rocketEl.style.transform = 'rotate(0deg) scale(1)';
-            multiplierEl.className = 'multiplier running';
-            cashoutBtn.disabled = false;
-            cashoutBtn.classList.remove('game-ended');
-            Telegram.WebApp.MainButton.hide();
+            elements.status.textContent = '🚀 ЛЕТИ!';
+            elements.status.className = 'status running';
+            elements.rocket.className = 'rocket running';
+            elements.rocket.style.transform = 'rotate(0deg) scale(1)';
+            elements.multiplier.className = 'multiplier running';
+            elements.cashoutBtn.disabled = false;
+            elements.cashoutBtn.classList.remove('game-ended');
+            elements.cashoutBtn.textContent = '💰 ВЫВОД';
             
-            // Обновление каждые 80мс для плавности
+            // Игровой цикл (плавный)
             intervalId = setInterval(() => {
                 currentMultiplier += 0.008;
-                multiplierEl.textContent = currentMultiplier.toFixed(2) + 'x';
-                rocketEl.style.transform = `rotate(${currentMultiplier * 3}deg) scale(1 + currentMultiplier * 0.02)`;
-                potentialWinEl.textContent = `Потенциал: ${(betAmount * currentMultiplier).toFixed(0)}⭐`;
+                elements.multiplier.textContent = currentMultiplier.toFixed(2) + 'x';
+                elements.rocket.style.transform = `rotate(${currentMultiplier * 3}deg) scale(1 + currentMultiplier * 0.02)`;
+                elements.potentialWin.textContent = `Потенциал: ${(betAmount * currentMultiplier).toFixed(0)}⭐`;
                 
+                // КРАШ!
                 if (currentMultiplier >= crashPoint) {
                     endGame(false);
                 }
             }, 80);
         }
         
-        // Вывод
+        // ✅ ВЫВОД (ПОБЕДА)
         function cashout() {
             endGame(true);
             clearInterval(intervalId);
             
-            // Отправка в бот
+            // Отправляем данные в бот
             Telegram.WebApp.sendData(JSON.stringify({
                 action: 'cashout',
                 multiplier: currentMultiplier.toFixed(2),
@@ -479,52 +433,56 @@
             }));
         }
         
-        // Конец игры
+        // ✅ КОНЕЦ ИГРЫ
         function endGame(won) {
             gameState = 'crashed';
-            cashoutBtn.disabled = true;
+            clearInterval(intervalId);
+            elements.cashoutBtn.disabled = true;
+            
+            const resultMultiplier = won ? currentMultiplier.toFixed(2) : crashPoint.toFixed(2);
             
             if (won) {
-                statusEl.textContent = `✅ ВЫВОД x${currentMultiplier.toFixed(2)}`;
-                statusEl.className = 'status won';
-                rocketEl.classList.remove('crashed');
-                cashoutBtn.classList.add('game-ended');
-                cashoutBtn.textContent = '✅ ВЫПЛАЧЕНО!';
+                // ПОБЕДА!
+                elements.status.textContent = `✅ ВЫВОД x${resultMultiplier}`;
+                elements.status.className = 'status running';
+                elements.cashoutBtn.classList.add('game-ended');
+                elements.cashoutBtn.textContent = '✅ ВЫПЛАЧЕНО!';
                 
-                // Золотые частицы!
-                createParticles(200, 300, '#ffd700');
+                // Золотые частицы победы
+                createParticles(200, 350, '#ffd700');
             } else {
-                statusEl.textContent = '💥 КРАШ!';
-                statusEl.className = 'status crashed';
-                rocketEl.classList.add('crashed');
+                // КРАШ!
+                elements.status.textContent = `💥 КРАШ x${resultMultiplier}`;
+                elements.status.className = 'status crashed';
+                elements.rocket.classList.add('crashed');
+                elements.cashoutBtn.textContent = '💥 КРАШ!';
                 
-                // Красные частицы
-                createParticles(200, 300, '#ff4444');
+                // Красные частицы краша
+                createParticles(200, 350, '#ff4444');
             }
             
             gamesPlayed++;
-            maxMultiplier = Math.max(maxMultiplier, currentMultiplier);
+            maxMultiplier = Math.max(maxMultiplier, parseFloat(resultMultiplier));
             
-            maxMultiplierEl.textContent = maxMultiplier.toFixed(2) + 'x';
-            gamesPlayedEl.textContent = gamesPlayed;
-            
-            Telegram.WebApp.MainButton.show();
-        }
-        
-        // Новая игра
-        function startNewGame() {
-            multiplierEl.textContent = '1.00x';
-            statusEl.textContent = 'Подготовка...';
-            setTimeout(startGame, 800);
+            // ✅ АВТО НОВЫЙ РАУНД ЧЕРЕЗ 2.5 СЕКУНДЫ (БЕЗ КНОПКИ!)
+            setTimeout(() => {
+                elements.multiplier.textContent = '1.00x';
+                elements.status.textContent = 'Новый раунд через 1...';
+                elements.rocket.classList.remove('crashed');
+                elements.cashoutBtn.disabled = false;
+                elements.cashoutBtn.classList.remove('game-ended');
+                elements.cashoutBtn.textContent = '💰 ВЫВОД';
+                setTimeout(startGame, 1000);
+            }, 2500);
         }
         
         // События
-        cashoutBtn.onclick = cashout;
+        elements.cashoutBtn.onclick = cashout;
         
-        // Автостарт
+        // ✅ АВТОСТАРТ ПРИ ЗАГРУЗКЕ
         setTimeout(() => {
-            statusEl.textContent = '3... 2... 1...';
-            setTimeout(startGame, 1500);
+            elements.status.textContent = 'Первый раунд...';
+            setTimeout(startGame, 1200);
         }, 500);
     </script>
 </body>

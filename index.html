@@ -48,7 +48,7 @@
             100% { transform: scale(1); }
         }
 
-        /* ПЕРЕНЕСЛИ ИГРОВОЕ ПОЛЕ НА ВЕРХ ПОСЛЕ ЗАГОЛОВКА */
+        /* ИГРОВОЕ ПОЛЕ НА ВЕРХУ */
         .game-container {
             background: rgba(0, 0, 0, 0.5);
             padding: 25px;
@@ -60,7 +60,7 @@
             overflow: hidden;
         }
 
-        /* Новый контейнер для траектории ракеты */
+        /* Контейнер для траектории ракеты */
         .rocket-trajectory {
             position: relative;
             height: 200px;
@@ -124,7 +124,8 @@
             min-height: 85px;
         }
 
-        .speed-indicator {
+        /* УБРАЛИ ПОЛОСУ СКОРОСТИ */
+        .speed-info {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -132,21 +133,24 @@
             margin-bottom: 20px;
             color: #ccc;
             font-size: 14px;
+            flex-wrap: wrap;
         }
 
-        .speed-bar {
-            width: 150px;
-            height: 6px;
+        .speed-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 15px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .speed-fill {
-            height: 100%;
-            background: linear-gradient(to right, #00ff88, #ffcc00, #ff416c);
-            width: 0%;
-            transition: width 0.5s ease;
+        .speed-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            transition: background-color 0.3s;
         }
 
         .balance-container {
@@ -420,6 +424,11 @@
             .controls {
                 flex-direction: column;
             }
+            
+            .speed-info {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
     </style>
 </head>
@@ -433,19 +442,23 @@
             <p>Остановите ракетку в нужный момент!</p>
         </div>
 
-        <!-- ИГРОВОЕ ПОЛЕ ПЕРЕМЕЩЕНО НА ВЕРХ -->
+        <!-- ИГРОВОЕ ПОЛЕ С РАКЕТКОЙ -->
         <div class="game-container">
             <div>Текущий коэффициент</div>
             <div class="multiplier-display" id="multiplier">1.00x</div>
             
-            <div class="speed-indicator">
-                <span>Скорость:</span>
-                <div class="speed-bar">
-                    <div class="speed-fill" id="speedFill"></div>
+            <!-- УПРОЩЕННЫЙ ИНДИКАТОР СКОРОСТИ (без полосы) -->
+            <div class="speed-info">
+                <div class="speed-indicator">
+                    <div class="speed-dot" id="speedDot"></div>
+                    <span id="speedText">Готов к запуску</span>
                 </div>
-                <span id="speedText">Медленно</span>
+                <div style="font-size: 12px; color: #888;">
+                    Скорость: <span id="speedValue">0</span> ед.
+                </div>
             </div>
             
+            <!-- ТРАЕКТОРИЯ РАКЕТЫ -->
             <div class="rocket-trajectory">
                 <div class="trajectory-line"></div>
                 <div class="trajectory-marks">
@@ -459,6 +472,7 @@
                 </div>
             </div>
             
+            <!-- УПРАВЛЕНИЕ -->
             <div class="controls">
                 <button class="btn btn-start" id="startBtn" onclick="startGame()">
                     <i class="fas fa-play"></i> Запустить
@@ -469,14 +483,21 @@
             </div>
         </div>
 
+        <!-- БАЛАНС ИГРОКА -->
         <div class="balance-container">
             <div>Ваш баланс</div>
             <div class="balance" id="balance">1,000.00 ₽</div>
-            <button class="telegram-btn" onclick="openTelegram()">
-                <i class="fab fa-telegram"></i> Пополнить через Telegram
-            </button>
+            <div style="margin-top: 15px;">
+                <button class="telegram-btn" onclick="openTelegram('deposit')">
+                    <i class="fas fa-plus-circle"></i> Пополнить
+                </button>
+                <button class="telegram-btn" onclick="openTelegram('withdraw')" style="background: #ff416c; margin-left: 10px;">
+                    <i class="fas fa-money-bill-wave"></i> Вывести
+                </button>
+            </div>
         </div>
 
+        <!-- УПРАВЛЕНИЕ СТАВКАМИ -->
         <div class="bet-controls">
             <div class="input-group">
                 <label>Сумма ставки (₽)</label>
@@ -499,6 +520,7 @@
             </div>
         </div>
 
+        <!-- ИСТОРИЯ И СТАТИСТИКА -->
         <div class="history">
             <div class="history-title">
                 <span>История игр</span>
@@ -520,8 +542,8 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        // Инициализация переменных
-        let balance = 1000.00;
+        // Инициализация переменных с загрузкой из localStorage
+        let balance = parseFloat(localStorage.getItem('rocketBalance')) || 1000.00;
         let currentBet = 100;
         let gameActive = false;
         let currentMultiplier = 1.00;
@@ -555,40 +577,53 @@
             
             // Инициализация скорости
             updateSpeedVisual();
+            
+            // Показать уведомление о загрузке баланса
+            if (localStorage.getItem('rocketBalance')) {
+                showNotification(`Баланс загружен: ${balance.toFixed(2)}₽`, 'success');
+            }
         });
+
+        // Сохранение баланса в localStorage
+        function saveBalance() {
+            localStorage.setItem('rocketBalance', balance.toString());
+        }
 
         // Установка ставки
         function setBet(amount) {
             document.getElementById('betAmount').value = amount;
             currentBet = amount;
-            localStorage.setItem('lastBet', amount);
+            localStorage.setItem('lastBet', amount.toString());
         }
 
-        // Обновление визуализации скорости
+        // Обновление визуализации скорости (упрощенная версия)
         function updateSpeedVisual() {
-            const speedFill = document.getElementById('speedFill');
+            const speedDot = document.getElementById('speedDot');
             const speedText = document.getElementById('speedText');
+            const speedValue = document.getElementById('speedValue');
             
             if (!gameActive) {
-                speedFill.style.width = '0%';
-                speedText.textContent = 'Медленно';
+                speedDot.style.backgroundColor = '#00ff88';
+                speedText.textContent = 'Готов к запуску';
+                speedValue.textContent = '0';
                 return;
             }
             
-            // Процент скорости от 0 до 100
-            const speedPercent = Math.min(100, (currentSpeed / maxSpeed) * 100);
-            speedFill.style.width = speedPercent + '%';
+            // Числовое значение скорости
+            speedValue.textContent = currentSpeed.toFixed(2);
             
-            // Текстовое описание скорости
+            // Цвет точки в зависимости от скорости
             if (currentSpeed < 0.3) {
-                speedText.textContent = 'Очень медленно';
-            } else if (currentSpeed < 0.6) {
+                speedDot.style.backgroundColor = '#00ff88';
                 speedText.textContent = 'Медленно';
-            } else if (currentSpeed < 0.8) {
+            } else if (currentSpeed < 0.6) {
+                speedDot.style.backgroundColor = '#ffcc00';
                 speedText.textContent = 'Средне';
-            } else if (currentSpeed < 0.95) {
+            } else if (currentSpeed < 0.9) {
+                speedDot.style.backgroundColor = '#ff8800';
                 speedText.textContent = 'Быстро';
             } else {
+                speedDot.style.backgroundColor = '#ff0000';
                 speedText.textContent = 'Очень быстро';
             }
         }
@@ -617,8 +652,13 @@
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             const autoCashoutValue = document.getElementById('autoCashout').value;
             
-            if (betAmount < 10 || betAmount > balance) {
-                showNotification('Некорректная сумма ставки!', 'error');
+            if (betAmount < 10) {
+                showNotification('Минимальная ставка: 10₽', 'error');
+                return;
+            }
+            
+            if (betAmount > balance) {
+                showNotification('Недостаточно средств на балансе!', 'error');
                 return;
             }
             
@@ -633,7 +673,7 @@
             rocketElement.style.color = '';
             
             // Сохраняем настройки
-            localStorage.setItem('lastBet', betAmount);
+            localStorage.setItem('lastBet', betAmount.toString());
             if (autoCashoutValue) {
                 autoCashout = parseFloat(autoCashoutValue);
                 localStorage.setItem('autoCashout', autoCashoutValue);
@@ -647,9 +687,10 @@
             document.getElementById('multiplier').textContent = '1.00x';
             document.getElementById('multiplier').style.color = '#00ff88';
             
-            // Запускаем игру
+            // Спишем ставку с баланса
             balance -= betAmount;
             updateBalance();
+            saveBalance(); // Сохраняем баланс
             
             gameInterval = setInterval(updateGame, 50);
             showNotification(`Ставка ${betAmount}₽ принята! Удачи!`, 'success');
@@ -705,26 +746,25 @@
             }
             
             // Вероятность краха (увеличивается с множителем)
-            // Формула: базовая вероятность + увеличение за множитель
-            let crashChance = 0;
-            
-            if (currentMultiplier < 1.5) {
-                crashChance = 0.001; // Очень низкая вероятность на старте
-            } else if (currentMultiplier < 2.0) {
-                crashChance = 0.003 + (currentMultiplier - 1.5) * 0.01;
-            } else if (currentMultiplier < 3.0) {
-                crashChance = 0.008 + (currentMultiplier - 2.0) * 0.015;
-            } else if (currentMultiplier < 5.0) {
-                crashChance = 0.023 + (currentMultiplier - 3.0) * 0.02;
-            } else {
-                crashChance = 0.063 + (currentMultiplier - 5.0) * 0.03;
-            }
-            
-            // Максимальная вероятность 50%
-            crashChance = Math.min(0.5, crashChance);
+            let crashChance = calculateCrashChance();
             
             if (Math.random() < crashChance) {
                 endGame(false);
+            }
+        }
+
+        // Расчет вероятности краха
+        function calculateCrashChance() {
+            if (currentMultiplier < 1.5) {
+                return 0.001; // Очень низкая вероятность на старте
+            } else if (currentMultiplier < 2.0) {
+                return 0.003 + (currentMultiplier - 1.5) * 0.01;
+            } else if (currentMultiplier < 3.0) {
+                return 0.008 + (currentMultiplier - 2.0) * 0.015;
+            } else if (currentMultiplier < 5.0) {
+                return 0.023 + (currentMultiplier - 3.0) * 0.02;
+            } else {
+                return 0.063 + (currentMultiplier - 5.0) * 0.03;
             }
         }
 
@@ -790,10 +830,11 @@
             stats.total++;
             history.unshift(historyItem);
             
-            // Сохраняем историю и статистику
+            // Сохраняем данные в localStorage
             if (history.length > 20) history = history.slice(0, 20);
             localStorage.setItem('rocketHistory', JSON.stringify(history));
             localStorage.setItem('rocketStats', JSON.stringify(stats));
+            saveBalance(); // Сохраняем баланс
             
             // Обновляем интерфейс
             updateBalance();
@@ -852,6 +893,16 @@
             }
         }
 
+        // Сброс баланса (для тестирования)
+        function resetBalance() {
+            if (confirm('Сбросить баланс до 1000₽?')) {
+                balance = 1000.00;
+                saveBalance();
+                updateBalance();
+                showNotification('Баланс сброшен до 1000₽', 'success');
+            }
+        }
+
         // Показать уведомление
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
@@ -864,9 +915,42 @@
             }, 3000);
         }
 
-        // Имитация пополнения через Telegram
-        function openTelegram() {
-            showNotification('В реальном приложении здесь будет открытие Telegram для пополнения', 'info');
+        // Имитация пополнения/вывода через Telegram
+        function openTelegram(action) {
+            if (action === 'deposit') {
+                showNotification('В реальном приложении здесь будет открытие Telegram для пополнения', 'info');
+                // В реальном приложении:
+                // Telegram.WebApp.openInvoice(url, callback)
+                
+                // Для демо - добавим тестовое пополнение
+                setTimeout(() => {
+                    if (confirm('Демо: Добавить 500₽ на баланс?')) {
+                        balance += 500;
+                        saveBalance();
+                        updateBalance();
+                        showNotification('Баланс пополнен на 500₽', 'success');
+                    }
+                }, 500);
+            } else if (action === 'withdraw') {
+                showNotification('В реальном приложении здесь будет вывод средств', 'info');
+                // В реальном приложении будет интеграция с платежной системой
+                
+                // Для демо
+                setTimeout(() => {
+                    if (balance < 100) {
+                        showNotification('Минимальная сумма вывода: 100₽', 'error');
+                        return;
+                    }
+                    
+                    if (confirm(`Демо: Вывести ${balance.toFixed(2)}₽?`)) {
+                        const withdrawAmount = balance;
+                        balance = 0;
+                        saveBalance();
+                        updateBalance();
+                        showNotification(`Вывод ${withdrawAmount.toFixed(2)}₽ выполнен!`, 'success');
+                    }
+                }, 500);
+            }
         }
 
         // Обработчики событий
@@ -882,10 +966,24 @@
             if (value > 100) this.value = 100;
         });
 
+        // Добавляем скрытую кнопку для сброса баланса (для разработки)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                resetBalance();
+            }
+        });
+
         // Загрузка инициализации для Telegram WebApp
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
+            
+            // Можно получить данные пользователя для персонализации
+            const user = Telegram.WebApp.initDataUnsafe.user;
+            if (user) {
+                console.log('Пользователь Telegram:', user);
+                // Можно использовать user.id для сохранения баланса на сервере
+            }
         }
     </script>
 </body>

@@ -31,13 +31,13 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 20px;
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
 
         .rocket-icon {
             font-size: 40px;
-            color: #00ff88;
+            color: #ffd700;
             margin-bottom: 10px;
             animation: pulse 2s infinite;
         }
@@ -48,7 +48,6 @@
             100% { transform: scale(1); }
         }
 
-        /* ИГРОВОЕ ПОЛЕ НА ВЕРХУ */
         .game-container {
             background: rgba(0, 0, 0, 0.5);
             padding: 25px;
@@ -60,7 +59,6 @@
             overflow: hidden;
         }
 
-        /* Контейнер для траектории ракеты */
         .rocket-trajectory {
             position: relative;
             height: 200px;
@@ -77,7 +75,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to top, transparent, #00ff88, transparent);
+            background: linear-gradient(to top, transparent, #ffd700, transparent);
             transform: translateX(-50%);
         }
 
@@ -119,38 +117,9 @@
             font-size: 72px;
             font-weight: bold;
             margin: 20px 0;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
             transition: all 0.1s;
             min-height: 85px;
-        }
-
-        /* УБРАЛИ ПОЛОСУ СКОРОСТИ */
-        .speed-info {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: #ccc;
-            font-size: 14px;
-            flex-wrap: wrap;
-        }
-
-        .speed-indicator {
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .speed-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-            transition: background-color 0.3s;
         }
 
         .balance-container {
@@ -165,8 +134,8 @@
         .balance {
             font-size: 36px;
             font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
             margin: 10px 0;
         }
 
@@ -194,34 +163,13 @@
             padding: 15px;
             font-size: 18px;
             background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00ff88;
+            border: 2px solid #ffd700;
             border-radius: 10px;
             color: white;
             text-align: center;
         }
 
-        .quick-bets {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .quick-bet {
-            padding: 10px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .quick-bet:hover {
-            background: rgba(0, 255, 136, 0.3);
-            transform: scale(1.05);
-        }
-
+        /* УБРАЛИ БЫСТРЫЕ СТАВКИ */
         .controls {
             display: flex;
             gap: 15px;
@@ -242,13 +190,13 @@
         }
 
         .btn-start {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #000;
         }
 
         .btn-start:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
         }
 
         .btn-cashout {
@@ -298,9 +246,9 @@
         }
 
         .win {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            border: 1px solid #00ff88;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border: 1px solid #ffd700;
         }
 
         .loss {
@@ -331,7 +279,7 @@
             margin-top: 10px;
             padding: 12px;
             background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00ff88;
+            border: 2px solid #ffd700;
             border-radius: 8px;
             color: white;
             text-align: center;
@@ -355,8 +303,25 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 20px auto;
+            margin: 10px auto;
             font-size: 16px;
+            width: 100%;
+        }
+
+        .telegram-btn.deposit {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+        }
+
+        .telegram-btn.withdraw {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .notification {
@@ -366,7 +331,7 @@
             padding: 15px 25px;
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.9);
-            border-left: 4px solid #00ff88;
+            border-left: 4px solid #ffd700;
             display: none;
             z-index: 1000;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -408,6 +373,11 @@
             100% { transform: scale(2); opacity: 0; }
         }
 
+        .star {
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+        }
+
         @media (max-width: 480px) {
             .multiplier-display {
                 font-size: 56px;
@@ -425,9 +395,8 @@
                 flex-direction: column;
             }
             
-            .speed-info {
+            .button-group {
                 flex-direction: column;
-                gap: 5px;
             }
         }
     </style>
@@ -446,17 +415,6 @@
         <div class="game-container">
             <div>Текущий коэффициент</div>
             <div class="multiplier-display" id="multiplier">1.00x</div>
-            
-            <!-- УПРОЩЕННЫЙ ИНДИКАТОР СКОРОСТИ (без полосы) -->
-            <div class="speed-info">
-                <div class="speed-indicator">
-                    <div class="speed-dot" id="speedDot"></div>
-                    <span id="speedText">Готов к запуску</span>
-                </div>
-                <div style="font-size: 12px; color: #888;">
-                    Скорость: <span id="speedValue">0</span> ед.
-                </div>
-            </div>
             
             <!-- ТРАЕКТОРИЯ РАКЕТЫ -->
             <div class="rocket-trajectory">
@@ -486,12 +444,12 @@
         <!-- БАЛАНС ИГРОКА -->
         <div class="balance-container">
             <div>Ваш баланс</div>
-            <div class="balance" id="balance">1,000.00 ₽</div>
-            <div style="margin-top: 15px;">
-                <button class="telegram-btn" onclick="openTelegram('deposit')">
+            <div class="balance" id="balance">1,000 <span class="star">★</span></div>
+            <div class="button-group">
+                <button class="telegram-btn deposit" onclick="openTelegram('deposit')">
                     <i class="fas fa-plus-circle"></i> Пополнить
                 </button>
-                <button class="telegram-btn" onclick="openTelegram('withdraw')" style="background: #ff416c; margin-left: 10px;">
+                <button class="telegram-btn withdraw" onclick="openTelegram('withdraw')">
                     <i class="fas fa-money-bill-wave"></i> Вывести
                 </button>
             </div>
@@ -500,19 +458,10 @@
         <!-- УПРАВЛЕНИЕ СТАВКАМИ -->
         <div class="bet-controls">
             <div class="input-group">
-                <label>Сумма ставки (₽)</label>
-                <input type="number" class="bet-amount" id="betAmount" value="100" min="10" max="10000" step="10">
+                <label>Сумма ставки (<span class="star">★</span>)</label>
+                <input type="number" class="bet-amount" id="betAmount" value="100" min="10" max="10000" step="10" placeholder="Введите сумму ставки">
             </div>
             
-            <div class="quick-bets">
-                <button class="quick-bet" onclick="setBet(50)">50 ₽</button>
-                <button class="quick-bet" onclick="setBet(100)">100 ₽</button>
-                <button class="quick-bet" onclick="setBet(500)">500 ₽</button>
-                <button class="quick-bet" onclick="setBet(1000)">1,000 ₽</button>
-                <button class="quick-bet" onclick="setBet(2500)">2,500 ₽</button>
-                <button class="quick-bet" onclick="setBet(5000)">5,000 ₽</button>
-            </div>
-
             <div class="auto-cashout">
                 <label>Автовывод (коэффициент)</label>
                 <input type="number" class="auto-input" id="autoCashout" value="2.00" min="1.10" max="100" step="0.10" placeholder="Например: 2.00">
@@ -575,74 +524,15 @@
                 autoCashout = parseFloat(savedAutoCashout);
             }
             
-            // Инициализация скорости
-            updateSpeedVisual();
-            
             // Показать уведомление о загрузке баланса
             if (localStorage.getItem('rocketBalance')) {
-                showNotification(`Баланс загружен: ${balance.toFixed(2)}₽`, 'success');
+                showNotification(`Баланс загружен: ${balance.toFixed(0)} ★`, 'success');
             }
         });
 
         // Сохранение баланса в localStorage
         function saveBalance() {
             localStorage.setItem('rocketBalance', balance.toString());
-        }
-
-        // Установка ставки
-        function setBet(amount) {
-            document.getElementById('betAmount').value = amount;
-            currentBet = amount;
-            localStorage.setItem('lastBet', amount.toString());
-        }
-
-        // Обновление визуализации скорости (упрощенная версия)
-        function updateSpeedVisual() {
-            const speedDot = document.getElementById('speedDot');
-            const speedText = document.getElementById('speedText');
-            const speedValue = document.getElementById('speedValue');
-            
-            if (!gameActive) {
-                speedDot.style.backgroundColor = '#00ff88';
-                speedText.textContent = 'Готов к запуску';
-                speedValue.textContent = '0';
-                return;
-            }
-            
-            // Числовое значение скорости
-            speedValue.textContent = currentSpeed.toFixed(2);
-            
-            // Цвет точки в зависимости от скорости
-            if (currentSpeed < 0.3) {
-                speedDot.style.backgroundColor = '#00ff88';
-                speedText.textContent = 'Медленно';
-            } else if (currentSpeed < 0.6) {
-                speedDot.style.backgroundColor = '#ffcc00';
-                speedText.textContent = 'Средне';
-            } else if (currentSpeed < 0.9) {
-                speedDot.style.backgroundColor = '#ff8800';
-                speedText.textContent = 'Быстро';
-            } else {
-                speedDot.style.backgroundColor = '#ff0000';
-                speedText.textContent = 'Очень быстро';
-            }
-        }
-
-        // Расчет текущей скорости
-        function calculateCurrentSpeed() {
-            if (currentMultiplier < 1.2) {
-                // Очень медленный старт
-                return baseSpeed;
-            } else if (currentMultiplier < 1.5) {
-                // Плавный разгон
-                return baseSpeed + (currentMultiplier - 1.2) * 0.5;
-            } else if (currentMultiplier < 2.0) {
-                // Ускорение
-                return baseSpeed + 0.15 + (currentMultiplier - 1.5) * 1.0;
-            } else {
-                // Фиксированная максимальная скорость после 2.00x
-                return maxSpeed;
-            }
         }
 
         // Начало игры
@@ -652,8 +542,9 @@
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             const autoCashoutValue = document.getElementById('autoCashout').value;
             
-            if (betAmount < 10) {
-                showNotification('Минимальная ставка: 10₽', 'error');
+            if (isNaN(betAmount) || betAmount < 10) {
+                showNotification('Минимальная ставка: 10 ★', 'error');
+                document.getElementById('betAmount').value = 10;
                 return;
             }
             
@@ -685,7 +576,7 @@
             document.getElementById('startBtn').disabled = true;
             document.getElementById('cashoutBtn').style.display = 'block';
             document.getElementById('multiplier').textContent = '1.00x';
-            document.getElementById('multiplier').style.color = '#00ff88';
+            document.getElementById('multiplier').style.color = '#ffd700';
             
             // Спишем ставку с баланса
             balance -= betAmount;
@@ -693,12 +584,29 @@
             saveBalance(); // Сохраняем баланс
             
             gameInterval = setInterval(updateGame, 50);
-            showNotification(`Ставка ${betAmount}₽ принята! Удачи!`, 'success');
+            showNotification(`Ставка ${betAmount} ★ принята! Удачи!`, 'success');
+        }
+
+        // Расчет текущей скорости
+        function calculateCurrentSpeed() {
+            if (currentMultiplier < 1.2) {
+                // Очень медленный старт
+                return baseSpeed;
+            } else if (currentMultiplier < 1.5) {
+                // Плавный разгон
+                return baseSpeed + (currentMultiplier - 1.2) * 0.5;
+            } else if (currentMultiplier < 2.0) {
+                // Ускорение
+                return baseSpeed + 0.15 + (currentMultiplier - 1.5) * 1.0;
+            } else {
+                // Фиксированная максимальная скорость после 2.00x
+                return maxSpeed;
+            }
         }
 
         // Обновление игры
         function updateGame() {
-            // Расчет текущей скорости
+            // Расчет текущей скорости (скрыто от пользователя)
             currentSpeed = calculateCurrentSpeed();
             
             // Увеличиваем множитель в зависимости от скорости
@@ -723,10 +631,10 @@
                 multiplierElement.style.color = '#ffff00';
                 rocketElement.style.color = '#ffff00';
             } else if (currentMultiplier > 1.5) {
-                multiplierElement.style.color = '#00ff88';
-                rocketElement.style.color = '#00ff88';
+                multiplierElement.style.color = '#ffd700';
+                rocketElement.style.color = '#ffd700';
             } else {
-                multiplierElement.style.color = '#00ff88';
+                multiplierElement.style.color = '#ffd700';
                 rocketElement.style.color = '#ffffff';
             }
             
@@ -735,9 +643,6 @@
             const maxHeight = 190; // пикселей (немного меньше высоты контейнера)
             const rocketHeight = Math.min(maxHeight, (currentMultiplier - 1) * (maxHeight / 9));
             rocketElement.style.transform = `translateX(-50%) translateY(-${rocketHeight}px)`;
-            
-            // Обновляем визуализацию скорости
-            updateSpeedVisual();
             
             // Проверка автовывода
             if (autoCashout && currentMultiplier >= autoCashout) {
@@ -791,7 +696,7 @@
             
             if (isWin) {
                 balance += winAmount;
-                showNotification(`Поздравляем! Вы выиграли ${winAmount.toFixed(2)}₽!`, 'success');
+                showNotification(`Поздравляем! Вы выиграли ${winAmount.toFixed(0)} ★!`, 'success');
                 stats.wins++;
                 
                 // Анимация победы
@@ -840,7 +745,6 @@
             updateBalance();
             updateHistory();
             updateStats();
-            updateSpeedVisual(); // Сбрасываем индикатор скорости
             
             document.getElementById('startBtn').disabled = false;
             document.getElementById('cashoutBtn').style.display = 'none';
@@ -851,13 +755,13 @@
                 rocketElement.innerHTML = '<i class="fas fa-rocket"></i>';
                 rocketElement.style.color = '';
                 rocketElement.style.transform = 'translateX(-50%) translateY(0)';
-                document.getElementById('multiplier').style.color = '#00ff88';
+                document.getElementById('multiplier').style.color = '#ffd700';
             }, 2000);
         }
 
         // Обновление баланса
         function updateBalance() {
-            document.getElementById('balance').textContent = balance.toFixed(2) + ' ₽';
+            document.getElementById('balance').textContent = balance.toFixed(0) + ' ★';
         }
 
         // Обновление истории
@@ -869,7 +773,7 @@
                 const div = document.createElement('div');
                 div.className = `history-item ${item.win ? 'win' : 'loss'}`;
                 div.textContent = `${item.multiplier}x`;
-                div.title = `${item.time} | Ставка: ${item.bet}₽ | ${item.win ? 'Выигрыш: ' + item.amount.toFixed(2) + '₽' : 'Проигрыш'}`;
+                div.title = `${item.time} | Ставка: ${item.bet}★ | ${item.win ? 'Выигрыш: ' + item.amount.toFixed(0) + '★' : 'Проигрыш'}`;
                 historyContainer.appendChild(div);
             });
         }
@@ -895,11 +799,11 @@
 
         // Сброс баланса (для тестирования)
         function resetBalance() {
-            if (confirm('Сбросить баланс до 1000₽?')) {
+            if (confirm('Сбросить баланс до 1000 ★?')) {
                 balance = 1000.00;
                 saveBalance();
                 updateBalance();
-                showNotification('Баланс сброшен до 1000₽', 'success');
+                showNotification('Баланс сброшен до 1000 ★', 'success');
             }
         }
 
@@ -907,7 +811,7 @@
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.style.borderLeftColor = type === 'success' ? '#00ff88' : '#ff416c';
+            notification.style.borderLeftColor = type === 'success' ? '#ffd700' : '#ff416c';
             notification.classList.add('show');
             
             setTimeout(() => {
@@ -918,46 +822,68 @@
         // Имитация пополнения/вывода через Telegram
         function openTelegram(action) {
             if (action === 'deposit') {
-                showNotification('В реальном приложении здесь будет открытие Telegram для пополнения', 'info');
-                // В реальном приложении:
-                // Telegram.WebApp.openInvoice(url, callback)
+                // В реальном приложении здесь будет интеграция с платежной системой
+                const depositAmount = prompt('Введите сумму пополнения (★):', '500');
                 
-                // Для демо - добавим тестовое пополнение
-                setTimeout(() => {
-                    if (confirm('Демо: Добавить 500₽ на баланс?')) {
-                        balance += 500;
-                        saveBalance();
-                        updateBalance();
-                        showNotification('Баланс пополнен на 500₽', 'success');
-                    }
-                }, 500);
+                if (depositAmount && !isNaN(depositAmount) && parseFloat(depositAmount) > 0) {
+                    const amount = parseFloat(depositAmount);
+                    balance += amount;
+                    saveBalance();
+                    updateBalance();
+                    showNotification(`Баланс пополнен на ${amount.toFixed(0)} ★`, 'success');
+                }
             } else if (action === 'withdraw') {
-                showNotification('В реальном приложении здесь будет вывод средств', 'info');
                 // В реальном приложении будет интеграция с платежной системой
+                if (balance < 100) {
+                    showNotification('Минимальная сумма вывода: 100 ★', 'error');
+                    return;
+                }
                 
-                // Для демо
-                setTimeout(() => {
-                    if (balance < 100) {
-                        showNotification('Минимальная сумма вывода: 100₽', 'error');
+                const withdrawAmount = prompt(`Введите сумму вывода (макс: ${balance.toFixed(0)} ★):`, balance.toFixed(0));
+                
+                if (withdrawAmount && !isNaN(withdrawAmount) && parseFloat(withdrawAmount) > 0) {
+                    const amount = parseFloat(withdrawAmount);
+                    
+                    if (amount > balance) {
+                        showNotification('Недостаточно средств!', 'error');
                         return;
                     }
                     
-                    if (confirm(`Демо: Вывести ${balance.toFixed(2)}₽?`)) {
-                        const withdrawAmount = balance;
-                        balance = 0;
-                        saveBalance();
-                        updateBalance();
-                        showNotification(`Вывод ${withdrawAmount.toFixed(2)}₽ выполнен!`, 'success');
+                    if (amount < 100) {
+                        showNotification('Минимальная сумма вывода: 100 ★', 'error');
+                        return;
                     }
-                }, 500);
+                    
+                    balance -= amount;
+                    saveBalance();
+                    updateBalance();
+                    showNotification(`Вывод ${amount.toFixed(0)} ★ выполнен!`, 'success');
+                }
             }
         }
 
         // Обработчики событий
         document.getElementById('betAmount').addEventListener('change', function() {
             const value = parseFloat(this.value);
-            if (value < 10) this.value = 10;
-            if (value > 10000) this.value = 10000;
+            if (isNaN(value) || value < 10) {
+                this.value = 10;
+                showNotification('Минимальная ставка: 10 ★', 'error');
+            }
+            if (value > 10000) {
+                this.value = 10000;
+                showNotification('Максимальная ставка: 10,000 ★', 'error');
+            }
+        });
+
+        document.getElementById('betAmount').addEventListener('input', function() {
+            // Удаляем все нецифровые символы кроме точки
+            this.value = this.value.replace(/[^\d.]/g, '');
+            
+            // Удаляем лишние точки
+            const parts = this.value.split('.');
+            if (parts.length > 2) {
+                this.value = parts[0] + '.' + parts.slice(1).join('');
+            }
         });
 
         document.getElementById('autoCashout').addEventListener('change', function() {
